@@ -6,8 +6,7 @@
     <title>Random Image</title>
 </head>
 <body>
-    <h1>Random Image from Current Directory</h1>
-    <img id="random-image" src="" alt="Random Image" width="600" height="auto">
+    <img id="random-image" src="" alt="Random Image">
     <script>
         // GitHub API URL to list files in the "images" folder
         const owner = "Cat-Productions";  // Replace with your GitHub username
@@ -49,6 +48,7 @@
                     // Save the updated list to localStorage
                     saveToCache();
                     console.log('Image list updated from GitHub');
+                    displayRandomImage();  // Display a random image after updating the list
                 })
                 .catch(error => console.error('Error fetching images:', error));  // Handle errors
         }
@@ -58,21 +58,21 @@
             // Check if the cache is fresh (within the last 60 seconds)
             if (imageFiles.length === 0 || Date.now() - lastUpdated > 60000) {
                 fetchImageList();  // Fetch the image list from GitHub if it's time to update
-            }
-
-            // If there are images, pick a random one
-            if (imageFiles.length > 0) {
-                const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)].download_url;
-                document.getElementById("random-image").src = randomImage;
             } else {
-                console.error('No images found');
+                // If there are images, pick a random one and set the src of the image tag
+                if (imageFiles.length > 0) {
+                    const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)].download_url;
+                    document.getElementById("random-image").src = randomImage;
+                } else {
+                    console.error('No images found');
+                }
             }
         }
 
         // Initialize the image list fetch process
         window.onload = function() {
             loadFromCache();  // Try to load the cached data from localStorage
-            displayRandomImage();  // Display the first random image
+            displayRandomImage();  // Display a random image
 
             // Refresh the image list every 60 seconds if needed
             setInterval(() => {
